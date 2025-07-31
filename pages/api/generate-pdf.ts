@@ -21,10 +21,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    console.log('Incoming request body:', req.body); // <-- Log incoming data
     const data = req.body;
 
     // Validate required data
     if (!data || typeof data !== 'object') {
+      console.error('Invalid request body:', data); // <-- Log invalid data
       return res.status(400).json({ error: 'Invalid request body' });
     }
 
