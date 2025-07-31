@@ -36,46 +36,85 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(500).json({ error: 'Template file not found' });
     }
 
-    const templateContent = fs.readFileSync(templatePath, 'utf8');
+    let templateContent: string;
+    try {
+      templateContent = fs.readFileSync(templatePath, 'utf8');
+    } catch (error) {
+      console.error('Error reading template file:', error);
+      return res.status(500).json({ error: 'Error reading template file' });
+    }
 
     // Compile the template with Handlebars
-    const template = Handlebars.compile(templateContent);
-    const html = template(data);
+    let template: HandlebarsTemplateDelegate;
+    let html: string;
+    
+    try {
+      template = Handlebars.compile(templateContent);
+      html = template(data);
+    } catch (error) {
+      console.error('Error compiling template:', error);
+      return res.status(500).json({ error: 'Error compiling template' });
+    }
 
     // Launch Puppeteer with additional options for Vercel
-    const browser = await puppeteer.launch({ 
-      headless: 'new',
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--no-first-run',
-        '--no-zygote',
-        '--single-process',
-        '--disable-gpu'
-      ]
-    });
+    let browser;
+    try {
+      browser = await puppeteer.launch({ 
+        headless: true,
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-accelerated-2d-canvas',
+          '--no-first-run',
+          '--no-zygote',
+          '--single-process',
+          '--disable-gpu'
+        ]
+      });
+    } catch (error) {
+      console.error('Error launching Puppeteer:', error);
+      return res.status(500).json({ error: 'Error launching browser' });
+    }
 
-    const page = await browser.newPage();
-    
-    // Set viewport and content
-    await page.setViewport({ width: 1200, height: 800 });
-    await page.setContent(html, { waitUntil: 'networkidle0' });
+    let page;
+    try {
+      page = await browser.newPage();
+      
+      // Set viewport and content
+      await page.setViewport({ width: 1200, height: 800 });
+      await page.setContent(html, { waitUntil: 'networkidle0' });
+    } catch (error) {
+      console.error('Error setting up page:', error);
+      await browser.close();
+      return res.status(500).json({ error: 'Error setting up page' });
+    }
     
     // Generate PDF with optimized settings
-    const pdf = await page.pdf({ 
-      format: 'A4',
-      printBackground: true,
-      margin: {
-        top: '0.5in',
-        right: '0.5in',
-        bottom: '0.5in',
-        left: '0.5in'
-      }
-    });
+    let pdf: Buffer;
+    try {
+      pdf = await page.pdf({ 
+        format: 'A4',
+        printBackground: true,
+        margin: {
+          top: '0.5in',
+          right: '0.5in',
+          bottom: '0.5in',
+          left: '0.5in'
+        }
+      });
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      await browser.close();
+      return res.status(500).json({ error: 'Error generating PDF' });
+    }
 
-    await browser.close();
+    try {
+      await browser.close();
+    } catch (error) {
+      console.error('Error closing browser:', error);
+      // Continue anyway since we have the PDF
+    }
 
     // Set response headers
     res.setHeader('Content-Type', 'application/pdf');
