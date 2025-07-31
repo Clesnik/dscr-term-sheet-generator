@@ -68,7 +68,7 @@ const Home: NextPage = () => {
               borderRadius: '4px',
               overflow: 'auto'
             }}>
-{`curl -X POST https://dscr-term-sheet-generator.vercel.app/api/generate-pdf \\
+{`curl -X POST https://dscr-term-sheet-generator-production.up.railway.app/api/generate-pdf \\
   -H "Content-Type: application/json" \\
   -d '{"program":"Program A","borrower_name":"Test User"}' \\
   -o test.pdf`}

@@ -12,6 +12,10 @@ const nextConfig = {
       },
     ];
   },
+  // Railway-specific optimizations
+  experimental: {
+    serverComponentsExternalPackages: ['puppeteer']
+  }
 };
 
 module.exports = nextConfig; 
