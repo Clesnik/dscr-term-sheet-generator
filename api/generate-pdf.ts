@@ -68,13 +68,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           '--disable-accelerated-2d-canvas',
           '--no-first-run',
           '--no-zygote',
-          '--single-process',
-          '--disable-gpu'
-        ]
+          '--disable-gpu',
+          '--disable-web-security',
+          '--disable-features=VizDisplayCompositor'
+        ],
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined
       });
     } catch (error) {
       console.error('Error launching Puppeteer:', error);
-      return res.status(500).json({ error: 'Error launching browser' });
+      return res.status(500).json({ error: 'Error launching browser', details: error instanceof Error ? error.message : 'Unknown error' });
     }
 
     let page;
