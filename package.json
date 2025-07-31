@@ -11,12 +11,10 @@
     ]
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "next dev",
     "dev:server": "tsx watch server/node-build.ts",
-    "build": "npm run build:client && npm run build:server",
-    "build:client": "vite build",
-    "build:server": "vite build --config vite.config.server.ts",
-    "start": "node dist/server/node-build.mjs",
+    "build": "next build",
+    "start": "next start",
     "test": "vitest --run",
     "format.fix": "prettier --write .",
     "typecheck": "tsc",
@@ -27,7 +25,10 @@
     "express": "^4.18.2",
     "zod": "^3.23.8",
     "puppeteer": "^23.0.0",
-    "handlebars": "^4.7.8"
+    "handlebars": "^4.7.8",
+    "next": "^14.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@hookform/resolvers": "^3.9.0",
