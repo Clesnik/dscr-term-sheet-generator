@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preliminary Term Sheet - {{ program }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.4;
+            color: #333;
+            background: white;
+            padding: 20px;
+            font-size: 12px;
+        }
+        
+        .header {
+            margin-bottom: 20px;
+        }
+        
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            font-style: italic;
+            color: #000;
+            margin-bottom: 5px;
+        }
+        
+        .program {
+            font-size: 16px;
+            color: #F6AE35;
+            font-weight: bold;
+            font-style: italic;
+        }
+        
+        .main-content {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 15px;
+        }
+        
+        .column {
+            flex: 1;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            font-style: italic;
+            color: #000;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 5px;
+        }
+        
+        .subsection {
+            margin-bottom: 8px;
+        }
+        
+        .subsection-title {
+            font-size: 14px;
+            font-weight: bold;
+            font-style: italic;
+            color: #000;
+            margin-bottom: 4px;
+        }
+        
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+            align-items: center;
+            font-size: 12px;
+        }
+        
+        .data-label {
+            font-weight: normal;
+            color: #333;
+            padding-left: 5px;
+        }
+        
+        .data-value {
+            font-weight: normal;
+            color: #333;
+            text-align: right;
+            padding-right: 10px;
+        }
+        
+        .credits-debits {
+            margin-top: 20px;
+        }
+        
+        .credits-section, .debits-section {
+            margin-bottom: 20px;
+            border: 2px solid #000;
+        }
+        
+        .credits-title, .debits-title {
+            font-size: 14px;
+            font-weight: bold;
+            font-style: italic;
+            color: #fff;
+            background: #000;
+            padding: 8px 6px;
+            margin: 0;
+        }
+        
+        .credits-content, .debits-content {
+            background: #fff;
+            padding: 8px 6px;
+        }
+        
+        .credits-content .data-label, .debits-content .data-label {
+            padding-left: 5px;
+        }
+        
+        .credits-footer, .debits-footer {
+            background: #f0f0f0;
+            padding: 8px 6px;
+            border-top: 1px solid #ccc;
+        }
+        
+
+        
+        .total-row {
+            font-weight: bold;
+            border-top: 1px solid #000;
+            padding-top: 5px;
+            margin-top: 5px;
+        }
+        
+        .total-row .data-value {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        
+        .disclaimer {
+            font-size: 9px;
+            color: #666;
+            line-height: 1.1;
+            margin-top: 15px;
+            border-top: 1px solid #ccc;
+            padding-top: 8px;
+        }
+        
+        @media print {
+            body {
+                padding: 0;
+            }
+            
+            .main-content {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">Preliminary Term Sheet</div>
+        <div class="program">{{ program }}</div>
+    </div>
+    
+    <div class="main-content">
+        <!-- Left Column: Loan Summary -->
+        <div class="column">
+            <div class="section-title">Loan Summary</div>
+            
+            <div class="subsection">
+                <div class="subsection-title">Borrower & Guarantors</div>
+                <div class="data-row">
+                    <span class="data-label">Borrower</span>
+                    <span class="data-value">{{ borrower_name }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Guarantor(s)</span>
+                    <span class="data-value">{{ guarantor_name }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">FICO</span>
+                    <span class="data-value">{{ fico_score }}+</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Experience</span>
+                    <span class="data-value">5+ Years</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Citizenship</span>
+                    <span class="data-value">US Citizen</span>
+                </div>
+            </div>
+            
+            <div class="subsection">
+                <div class="subsection-title">Subject Property</div>
+                <div class="data-row">
+                    <span class="data-label">Street</span>
+                    <span class="data-value">{{ street_address }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">City, State, Zip</span>
+                    <span class="data-value">{{ city_state_zip }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Property Type</span>
+                    <span class="data-value">{{ property_type }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Sq Footage</span>
+                    <span class="data-value">2,500 sq ft</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Date Purchased (refi only)</span>
+                    <span class="data-value">N/A</span>
+                </div>
+            </div>
+            
+            <div class="subsection">
+                <div class="subsection-title">Loan Structure</div>
+                <div class="data-row">
+                    <span class="data-label">Transaction Type</span>
+                    <span class="data-value">{{ loan_purpose }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Loan Structure</span>
+                    <span class="data-value">{{ loan_term }} Fixed</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">ID Period</span>
+                    <span class="data-value">0 Months</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Pre-Pay Penalty</span>
+                    <span class="data-value">{{ prepayment_penalty }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Interest Rate</span>
+                    <span class="data-value">{{ interest_rate }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Leverage (LTV)</span>
+                    <span class="data-value">{{ ltv }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Loan Amount</span>
+                    <span class="data-value">{{ loan_amount }}</span>
+                </div>
+            </div>
+            
+            <div class="subsection">
+                <div class="subsection-title">Lender Fees</div>
+                <div class="data-row">
+                    <span class="data-label">Origination</span>
+                    <span class="data-value">1.00%</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Rate Buy Down</span>
+                    <span class="data-value">0.00%</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Underwriting</span>
+                    <span class="data-value">$1,995</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Legal & Doc Prep</span>
+                    <span class="data-value">{{ title_fee }}</span>
+                </div>
+            </div>
+            
+            <div class="subsection">
+                <div class="subsection-title">Liquidity Requirement</div>
+                <div class="data-row">
+                    <span class="data-label">Liquidity Requirement</span>
+                    <span class="data-value">$150,000</span>
+                </div>
+                <div class="data-row">
+                                            <span class="data-label" style="padding-left: 20px;">Cash to Close</span>
+                    <span class="data-value">{{ cash_to_close }}</span>
+                </div>
+                <div class="data-row">
+                                            <span class="data-label" style="padding-left: 30px;">Down Payment</span>
+                    <span class="data-value">{{ cash_to_close }}</span>
+                </div>
+                <div class="data-row">
+                                            <span class="data-label" style="padding-left: 30px;">Escrows</span>
+                    <span class="data-value">$8,500</span>
+                </div>
+                <div class="data-row">
+                                            <span class="data-label" style="padding-left: 30px;">2 Months Reserves</span>
+                    <span class="data-value">$16,500</span>
+                </div>
+                <div class="data-row">
+                                            <span class="data-label" style="padding-left: 20px;">Mortgage Debt - 1.00%</span>
+                    <span class="data-value">$0</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Cash Out</span>
+                    <span class="data-value">$0</span>
+                </div>
+            </div>
+            
+            <div class="subsection">
+                <div class="subsection-title">Debt Service (DSCR)</div>
+                <div class="data-row">
+                    <span class="data-label">DSCR</span>
+                    <span class="data-value">{{ dscr }}x</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Column: Closing Statement Estimate -->
+        <div class="column">
+            <div class="section-title">Closing Statement Estimate</div>
+            
+            <div class="credits-debits">
+                <div class="credits-section">
+                    <div class="credits-title">CREDITS</div>
+                    <div class="credits-content">
+                        <div class="data-row">
+                            <span class="data-label">Loan Proceeds</span>
+                            <span class="data-value">{{ loan_proceeds }}</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Cash Due @ Closing</span>
+                            <span class="data-value">{{ cash_to_close }}</span>
+                        </div>
+                    </div>
+                    <div class="credits-footer">
+                        <div class="data-row">
+                            <span class="data-label" style="font-weight: bold; font-style: italic;">TOTAL SOURCES</span>
+                            <span class="data-value">{{ total_sources }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="debits-section">
+                    <div class="debits-title">DEBITS</div>
+                    <div class="debits-content">
+                        <div class="data-row">
+                            <span class="data-label">Purchase Price/Payoff</span>
+                            <span class="data-value">{{ appraised_value }}</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Lender Fee - Origination</span>
+                            <span class="data-value">{{ lender_fee }}</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Broker Fee - Origination</span>
+                            <span class="data-value">$0</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Lender Fee - Rate Buy Down</span>
+                            <span class="data-value">$0</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Lender Fee - Diligence & Legal</span>
+                            <span class="data-value">{{ title_fee }}</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">HOI Escrow</span>
+                            <span class="data-value">$2,500</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Flood Escrow</span>
+                            <span class="data-value">$0</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Tax Escrow</span>
+                            <span class="data-value">$6,000</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">PITIA Escrow</span>
+                            <span class="data-value">$0</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">HOI Premium - Balance Due</span>
+                            <span class="data-value">$1,200</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Flood Insurance Premium</span>
+                            <span class="data-value">$0</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Per Diem Interest</span>
+                            <span class="data-value">$62.50</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Title Insurance & Recording Fees</span>
+                            <span class="data-value">{{ recording_fee }}</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">&nbsp;</span>
+                            <span class="data-value">&nbsp;</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">&nbsp;</span>
+                            <span class="data-value">&nbsp;</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">&nbsp;</span>
+                            <span class="data-value">&nbsp;</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">&nbsp;</span>
+                            <span class="data-value">&nbsp;</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">&nbsp;</span>
+                            <span class="data-value">&nbsp;</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">&nbsp;</span>
+                            <span class="data-value">&nbsp;</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">&nbsp;</span>
+                            <span class="data-value">&nbsp;</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">&nbsp;</span>
+                            <span class="data-value">&nbsp;</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">&nbsp;</span>
+                            <span class="data-value">&nbsp;</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">&nbsp;</span>
+                            <span class="data-value">&nbsp;</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">&nbsp;</span>
+                            <span class="data-value">&nbsp;</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Cash Out to Borrower</span>
+                            <span class="data-value">$0</span>
+                        </div>
+                    </div>
+                    <div class="debits-footer">
+                        <div class="data-row">
+                            <span class="data-label" style="font-weight: bold; font-style: italic;">TOTAL USES</span>
+                            <span class="data-value">{{ total_uses }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="disclaimer">
+        *Pricing of initial rate is indicative and subject to re-pricing at Lender's discretion based on factors that may include, but are not limited to, prevailing market conditions and underwriting/diligence review. Factors that may affect your rate include but are not limited to your credit history/score, Loan-to-Value ratios, borrower's liquidity, and asset characteristics. Rates, terms and conditions offered apply only to qualified borrowers in accordance with our guidelines at the time of application. Property factors and geographic limitations are subject to change at any time without notice. Stated rates and Loan-to-Value ratios are only available to qualified applicants. This is a non-binding expression of interest and does not create any legally binding commitment or obligation. In turn, this expression of interest is subject to our internal credit, legal and investment approval process. Lender is in the business of exclusively originating, funding, and selling business purpose loans secured by non-owner occupied real estate. All loans referenced herein are non-consumer loans.
+    </div>
+</body>
+</html> 
