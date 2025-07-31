@@ -15,7 +15,10 @@ const nextConfig = {
   // Railway-specific optimizations
   experimental: {
     serverComponentsExternalPackages: ['puppeteer']
-  }
+  },
+  // Ensure API routes are not statically exported
+  trailingSlash: false,
+  generateEtags: false
 };
 
 module.exports = nextConfig; 
