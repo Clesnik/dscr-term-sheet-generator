@@ -25,6 +25,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const logoUrl = req.body.logo || defaultLogoUrl;
     html = html.replace(/\{\{\s*logo_url\s*\}\}/g, logoUrl);
 
+    // 4. Handle program color fallback
+    const defaultProgramColor = '#F6AE35';
+    const programColor = req.body.program_color || defaultProgramColor;
+    html = html.replace(/\{\{\s*program_color\s*\}\}/g, programColor);
+
     // 3. Generate PDF using Puppeteer
     const browser = await puppeteer.launch({
       headless: true,
