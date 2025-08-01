@@ -459,119 +459,83 @@
                 </tr>
             </table>
             
-            <div class="debits-section">
-                <div class="debits-header-box">
-                    <div class="debits-title" style="font-style: italic;">DEBITS</div>
-                </div>
-                <div class="debits-content">
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">Purchase Price/Payoff</span>
-                        <span class="data-value">{{ appraised_value }}</span>
-                    </div>
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">Lender Fee - Origination</span>
-                        <span class="data-value">{{ lender_fee }}</span>
-                    </div>
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">Broker Fee - Origination</span>
-                        <span class="data-value">$0</span>
-                    </div>
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">Lender Fee - Rate Buy Down</span>
-                        <span class="data-value">$0</span>
-                    </div>
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">Lender Fee - Diligence & Legal</span>
-                        <span class="data-value">{{ title_fee }}</span>
-                    </div>
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">HOI Escrow</span>
-                        <span class="data-value">$2,500</span>
-                    </div>
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">Flood Escrow</span>
-                        <span class="data-value">$0</span>
-                    </div>
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">Tax Escrow</span>
-                        <span class="data-value">$6,000</span>
-                    </div>
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">PITIA Escrow</span>
-                        <span class="data-value">$0</span>
-                    </div>
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">HOI Premium - Balance Due</span>
-                        <span class="data-value">$1,200</span>
-                    </div>
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">Flood Insurance Premium</span>
-                        <span class="data-value">$0</span>
-                    </div>
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">Per Diem Interest</span>
-                        <span class="data-value">$62.50</span>
-                    </div>
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">Title Insurance & Recording Fees</span>
-                        <span class="data-value">{{ recording_fee }}</span>
-                    </div>
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">&nbsp;</span>
-                        <span class="data-value">&nbsp;</span>
-                    </div>
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">&nbsp;</span>
-                        <span class="data-value">&nbsp;</span>
-                    </div>
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">&nbsp;</span>
-                        <span class="data-value">&nbsp;</span>
-                    </div>
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">&nbsp;</span>
-                        <span class="data-value">&nbsp;</span>
-                    </div>
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">&nbsp;</span>
-                        <span class="data-value">&nbsp;</span>
-                    </div>
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">&nbsp;</span>
-                        <span class="data-value">&nbsp;</span>
-                    </div>
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">&nbsp;</span>
-                        <span class="data-value">&nbsp;</span>
-                    </div>
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">&nbsp;</span>
-                        <span class="data-value">&nbsp;</span>
-                    </div>
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">&nbsp;</span>
-                        <span class="data-value">&nbsp;</span>
-                    </div>
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">&nbsp;</span>
-                        <span class="data-value">&nbsp;</span>
-                    </div>
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">&nbsp;</span>
-                        <span class="data-value">&nbsp;</span>
-                    </div>
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label">Cash Out to Borrower</span>
-                        <span class="data-value">$0</span>
-                    </div>
-                </div>
-                <div class="debits-footer">
-                    <div class="data-row" style="padding-left: 4px; padding-right: 4px;">
-                        <span class="data-label" style="font-style: italic;">TOTAL USES</span>
-                        <span class="data-value">{{ total_uses }}</span>
-                    </div>
-                </div>
-            </div>
+            <table style="width: 100%; border: 2px solid #000000; margin-bottom: 20px; background-color: transparent; border-collapse: collapse; position: relative; z-index: 2;">
+                <tr style="background-color: #000000;">
+                    <td style="padding: 8px 4px; color: #ffffff; font-weight: bold; text-transform: uppercase; font-size: 14px; border: none; font-style: italic;">DEBITS</td>
+                </tr>
+                <tr style="background-color: #ffffff;">
+                    <td style="padding: 8px 4px; color: #000000; border: none; background-color: #ffffff;">
+                        <table style="width: 100%; background-color: #ffffff; border-collapse: collapse;">
+                            <tr style="background-color: #ffffff;">
+                                <td style="color: #000000; padding: 2px 4px; background-color: #ffffff;">Purchase Price/Payoff</td>
+                                <td style="color: #000000; text-align: right; padding: 2px 4px; background-color: #ffffff;">{{ appraised_value }}</td>
+                            </tr>
+                            <tr style="background-color: #ffffff;">
+                                <td style="color: #000000; padding: 2px 4px; background-color: #ffffff;">Lender Fee - Origination</td>
+                                <td style="color: #000000; text-align: right; padding: 2px 4px; background-color: #ffffff;">{{ lender_fee }}</td>
+                            </tr>
+                            <tr style="background-color: #ffffff;">
+                                <td style="color: #000000; padding: 2px 4px; background-color: #ffffff;">Broker Fee - Origination</td>
+                                <td style="color: #000000; text-align: right; padding: 2px 4px; background-color: #ffffff;">$0</td>
+                            </tr>
+                            <tr style="background-color: #ffffff;">
+                                <td style="color: #000000; padding: 2px 4px; background-color: #ffffff;">Lender Fee - Rate Buy Down</td>
+                                <td style="color: #000000; text-align: right; padding: 2px 4px; background-color: #ffffff;">$0</td>
+                            </tr>
+                            <tr style="background-color: #ffffff;">
+                                <td style="color: #000000; padding: 2px 4px; background-color: #ffffff;">Lender Fee - Diligence & Legal</td>
+                                <td style="color: #000000; text-align: right; padding: 2px 4px; background-color: #ffffff;">{{ title_fee }}</td>
+                            </tr>
+                            <tr style="background-color: #ffffff;">
+                                <td style="color: #000000; padding: 2px 4px; background-color: #ffffff;">HOI Escrow</td>
+                                <td style="color: #000000; text-align: right; padding: 2px 4px; background-color: #ffffff;">$2,500</td>
+                            </tr>
+                            <tr style="background-color: #ffffff;">
+                                <td style="color: #000000; padding: 2px 4px; background-color: #ffffff;">Flood Escrow</td>
+                                <td style="color: #000000; text-align: right; padding: 2px 4px; background-color: #ffffff;">$0</td>
+                            </tr>
+                            <tr style="background-color: #ffffff;">
+                                <td style="color: #000000; padding: 2px 4px; background-color: #ffffff;">Tax Escrow</td>
+                                <td style="color: #000000; text-align: right; padding: 2px 4px; background-color: #ffffff;">$6,000</td>
+                            </tr>
+                            <tr style="background-color: #ffffff;">
+                                <td style="color: #000000; padding: 2px 4px; background-color: #ffffff;">PITIA Escrow</td>
+                                <td style="color: #000000; text-align: right; padding: 2px 4px; background-color: #ffffff;">$0</td>
+                            </tr>
+                            <tr style="background-color: #ffffff;">
+                                <td style="color: #000000; padding: 2px 4px; background-color: #ffffff;">HOI Premium - Balance Due</td>
+                                <td style="color: #000000; text-align: right; padding: 2px 4px; background-color: #ffffff;">$1,200</td>
+                            </tr>
+                            <tr style="background-color: #ffffff;">
+                                <td style="color: #000000; padding: 2px 4px; background-color: #ffffff;">Flood Insurance Premium</td>
+                                <td style="color: #000000; text-align: right; padding: 2px 4px; background-color: #ffffff;">$0</td>
+                            </tr>
+                            <tr style="background-color: #ffffff;">
+                                <td style="color: #000000; padding: 2px 4px; background-color: #ffffff;">Per Diem Interest</td>
+                                <td style="color: #000000; text-align: right; padding: 2px 4px; background-color: #ffffff;">$62.50</td>
+                            </tr>
+                            <tr style="background-color: #ffffff;">
+                                <td style="color: #000000; padding: 2px 4px; background-color: #ffffff;">Title Insurance & Recording Fees</td>
+                                <td style="color: #000000; text-align: right; padding: 2px 4px; background-color: #ffffff;">{{ recording_fee }}</td>
+                            </tr>
+                            <tr style="background-color: #ffffff;">
+                                <td style="color: #000000; padding: 2px 4px; background-color: #ffffff;">Cash Out to Borrower</td>
+                                <td style="color: #000000; text-align: right; padding: 2px 4px; background-color: #ffffff;">$0</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr style="background-color: #808080;">
+                    <td style="padding: 8px 4px; color: #ffffff; font-weight: bold; border: none;">
+                        <table style="width: 100%; background-color: #808080; border-collapse: collapse;">
+                            <tr style="background-color: #808080;">
+                                <td style="color: #ffffff; font-weight: bold; padding: 2px 4px; font-style: italic;">TOTAL USES</td>
+                                <td style="color: #ffffff; font-weight: bold; text-align: right; padding: 2px 4px;">{{ total_uses }}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
             </div>
         </div>
     </div>
