@@ -110,6 +110,49 @@
             font-weight: bold;
         }
         
+        .debits-section {
+            border: 2px solid #000000;
+            margin-bottom: 20px;
+        }
+        
+        .debits-header-box {
+            background-color: #000000;
+            padding: 8px 12px;
+            width: 100%;
+            display: block;
+        }
+        
+        .debits-title {
+            color: #ffffff;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 14px;
+            margin: 0;
+        }
+        
+        .debits-content {
+            background-color: #ffffff;
+            color: #000000;
+            padding: 8px 6px;
+        }
+        
+        .debits-content .data-label,
+        .debits-content .data-value {
+            color: #000000;
+        }
+        
+        .debits-footer {
+            background-color: #808080;
+            color: #ffffff;
+            padding: 8px 6px;
+        }
+        
+        .debits-footer .data-label,
+        .debits-footer .data-value {
+            color: #ffffff;
+            font-weight: bold;
+        }
+        
         .subsection {
             margin-bottom: 8px;
         }
@@ -383,8 +426,10 @@
                 </div>
             </div>
             
-            <div class="debits-section" style="border: 2px solid #000000 !important;">
-                <div class="debits-title section-label">DEBITS</div>
+            <div class="debits-section">
+                <div class="debits-header-box">
+                    <div class="debits-title">DEBITS</div>
+                </div>
                 <div class="debits-content">
                     <div class="data-row">
                         <span class="data-label">Purchase Price/Payoff</span>
@@ -487,10 +532,10 @@
                         <span class="data-value">$0</span>
                     </div>
                 </div>
-                <div class="debits-footer" style="background-color: #808080 !important;">
+                <div class="debits-footer">
                     <div class="data-row">
-                        <span class="data-label" style="color: #ffffff !important;">TOTAL USES</span>
-                        <span class="data-value" style="color: #ffffff !important;">{{ total_uses }}</span>
+                        <span class="data-label">TOTAL USES</span>
+                        <span class="data-value">{{ total_uses }}</span>
                     </div>
                 </div>
             </div>
