@@ -20,6 +20,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       html = html.replace(regex, String(value ?? ''));
     }
 
+    // 3. Handle logo fallback
+    const defaultLogoUrl = 'https://yvykefnhoxuvovczsucw.supabase.co/storage/v1/object/public/documint-uploads//brrrr-loans-logo-mark-gradient-orange-light-909%20(1).png';
+    const logoUrl = req.body.logo || defaultLogoUrl;
+    html = html.replace(/\{\{\s*logo_url\s*\}\}/g, logoUrl);
+
     // 3. Generate PDF using Puppeteer
     const browser = await puppeteer.launch({
       headless: true,
