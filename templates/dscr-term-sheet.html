@@ -104,7 +104,6 @@
         .credits-title, .debits-title {
             font-size: 14px;
             font-weight: bold;
-            font-style: italic;
             color: #fff;
             background: #000;
             padding: 8px 6px;
@@ -121,9 +120,19 @@
         }
         
         .credits-footer, .debits-footer {
-            background: #f0f0f0;
+            background: #808080;
             padding: 8px 6px;
-            border-top: 1px solid #ccc;
+            border-top: 1px solid #000;
+        }
+        
+        .credits-footer .data-label, .debits-footer .data-label {
+            font-weight: bold;
+            color: #fff;
+        }
+        
+        .credits-footer .data-value, .debits-footer .data-value {
+            font-weight: bold;
+            color: #fff;
         }
         
 
@@ -331,7 +340,7 @@
                     </div>
                     <div class="credits-footer">
                         <div class="data-row">
-                            <span class="data-label" style="font-weight: bold; font-style: italic;">TOTAL SOURCES</span>
+                            <span class="data-label">TOTAL SOURCES</span>
                             <span class="data-value">{{ total_sources }}</span>
                         </div>
                     </div>
@@ -443,7 +452,7 @@
                     </div>
                     <div class="debits-footer">
                         <div class="data-row">
-                            <span class="data-label" style="font-weight: bold; font-style: italic;">TOTAL USES</span>
+                            <span class="data-label">TOTAL USES</span>
                             <span class="data-value">{{ total_uses }}</span>
                         </div>
                     </div>
