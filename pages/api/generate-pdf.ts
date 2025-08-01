@@ -1,162 +1,44 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import puppeteer from 'puppeteer';
-import Handlebars from 'handlebars';
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
+import puppeteer from 'puppeteer';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  console.log('=== PDF Generation API Called ===');
-  
-  // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' });
     return;
   }
 
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
-  }
-
   try {
-    console.log('Incoming request body:', req.body); // <-- Log incoming data
-    const data = req.body;
-
-    // Validate required data
-    if (!data || typeof data !== 'object') {
-      console.error('Invalid request body:', data); // <-- Log invalid data
-      return res.status(400).json({ error: 'Invalid request body' });
-    }
-
-    console.log('✅ Request validation passed');
-
-    // Read the HTML template
+    // 1. Read the HTML template
     const templatePath = path.join(process.cwd(), 'templates', 'dscr-term-sheet.html');
-    console.log('Template path:', templatePath);
-    
-    if (!fs.existsSync(templatePath)) {
-      console.error('Template file not found:', templatePath);
-      return res.status(500).json({ error: 'Template file not found' });
+    let html = await fs.readFile(templatePath, 'utf8');
+
+    // 2. Replace placeholders in the template with request data
+    for (const [key, value] of Object.entries(req.body)) {
+      const regex = new RegExp(`{{\\s*${key}\\s*}}`, 'g');
+      html = html.replace(regex, String(value ?? ''));
     }
 
-    console.log('✅ Template file exists');
+    // 3. Generate PDF using Puppeteer
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+    const page = await browser.newPage();
+    await page.setContent(html);
+    const pdfBuffer = await page.pdf({ format: 'A4' });
+    await browser.close();
 
-    let templateContent: string;
-    try {
-      templateContent = fs.readFileSync(templatePath, 'utf8');
-      console.log('✅ Template file read successfully, length:', templateContent.length);
-    } catch (error) {
-      console.error('Error reading template file:', error);
-      return res.status(500).json({ error: 'Error reading template file' });
-    }
-
-    // Compile the template with Handlebars
-    let template: HandlebarsTemplateDelegate;
-    let html: string;
-    
-    try {
-      template = Handlebars.compile(templateContent);
-      html = template(data);
-      console.log('✅ Template compiled successfully, HTML length:', html.length);
-    } catch (error) {
-      console.error('Error compiling template:', error);
-      return res.status(500).json({ error: 'Error compiling template' });
-    }
-
-    console.log('🚀 Launching Puppeteer...');
-
-    // Launch Puppeteer with additional options for Vercel
-    let browser;
-    try {
-      browser = await puppeteer.launch({ 
-        headless: true,
-        args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--disable-dev-shm-usage',
-          '--disable-accelerated-2d-canvas',
-          '--no-first-run',
-          '--no-zygote',
-          '--disable-gpu',
-          '--disable-web-security',
-          '--disable-features=VizDisplayCompositor'
-        ],
-        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined
-      });
-      console.log('✅ Puppeteer launched successfully');
-    } catch (error) {
-      console.error('Error launching Puppeteer:', error);
-      return res.status(500).json({ error: 'Error launching browser', details: error instanceof Error ? error.message : 'Unknown error' });
-    }
-
-    let page;
-    try {
-      page = await browser.newPage();
-      console.log('✅ New page created');
-      
-      // Set viewport and content
-      await page.setViewport({ width: 1200, height: 800 });
-      await page.setContent(html, { waitUntil: 'networkidle0' });
-      console.log('✅ Page content set successfully');
-    } catch (error) {
-      console.error('Error setting up page:', error);
-      await browser.close();
-      return res.status(500).json({ error: 'Error setting up page' });
-    }
-    
-    console.log('📄 Generating PDF...');
-    
-    // Generate PDF with optimized settings
-    let pdf: Buffer;
-    try {
-      pdf = await page.pdf({ 
-        format: 'A4',
-        printBackground: true,
-        margin: {
-          top: '0.5in',
-          right: '0.5in',
-          bottom: '0.5in',
-          left: '0.5in'
-        }
-      });
-      console.log('✅ PDF generated successfully, size:', pdf.length, 'bytes');
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-      await browser.close();
-      return res.status(500).json({ error: 'Error generating PDF' });
-    }
-
-    try {
-      await browser.close();
-      console.log('✅ Browser closed successfully');
-    } catch (error) {
-      console.error('Error closing browser:', error);
-      // Continue anyway since we have the PDF
-    }
-
-    console.log('📤 Setting response headers...');
-    
-    // Set response headers
+    // 4. Convert to real Buffer and send the PDF as a file
+    const buffer = Buffer.from(pdfBuffer);
+    console.log('PDF buffer type:', typeof buffer, 'isBuffer:', Buffer.isBuffer(buffer), 'length:', buffer.length);
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', 'attachment; filename=term-sheet.pdf');
-    res.setHeader('Content-Length', pdf.length.toString());
-
-    console.log('📤 Sending PDF response...');
-
-    // Send the PDF
-    res.send(pdf);
-    
-    console.log('✅ PDF sent successfully!');
-
-  } catch (error) {
-    console.error('❌ PDF generation error:', error);
-    res.status(500).json({ 
-      error: 'Failed to generate PDF',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    });
+    res.setHeader('Content-Length', buffer.length.toString());
+    res.status(200).end(buffer);
+  } catch (err) {
+    console.error('PDF generation error:', err);
+    res.status(500).json({ error: 'Failed to generate PDF', details: err instanceof Error ? err.message : err, stack: err instanceof Error ? err.stack : undefined });
   }
 } 
