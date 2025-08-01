@@ -27,7 +27,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
     const page = await browser.newPage();
     await page.setContent(html);
-    const pdfBuffer = await page.pdf({ format: 'A4' });
+    const pdfBuffer = await page.pdf({ 
+      format: 'A4',
+      margin: {
+        top: '0.25in',
+        right: '0.25in',
+        bottom: '0in',
+        left: '0.25in'
+      }
+    });
     await browser.close();
 
     // 4. Convert to real Buffer and send the PDF as a file
