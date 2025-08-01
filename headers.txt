@@ -1,0 +1,13 @@
+HTTP/2 200 
+access-control-allow-headers: Content-Type
+access-control-allow-methods: GET, POST, OPTIONS
+access-control-allow-origin: *
+content-disposition: attachment; filename=term-sheet.pdf
+content-type: application/json; charset=utf-8
+date: Thu, 31 Jul 2025 23:00:24 GMT
+etag: "n1wimmsn31h5jj"
+server: railway-edge
+vary: Accept-Encoding
+x-railway-edge: railway/us-east4-eqdc4a
+x-railway-request-id: mkec5aLBTGOduBVXg4a9AQ
+

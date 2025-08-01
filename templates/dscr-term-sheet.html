@@ -98,47 +98,47 @@
         
         .credits-section, .debits-section {
             margin-bottom: 20px;
-            border: 2px solid #000;
+            border: 2px solid #000 !important;
         }
         
         .credits-title, .debits-title {
-            font-size: 14px;
-            font-weight: bold;
-            color: #fff !important;
-            background: #000 !important;
-            padding: 8px 6px;
-            margin: 0;
+            font-size: 14px !important;
+            font-weight: bold !important;
+            color: #ffffff !important;
+            background: #000000 !important;
+            padding: 8px 6px !important;
+            margin: 0 !important;
         }
         
         .credits-content, .debits-content {
-            background: #fff !important;
-            padding: 8px 6px;
-            color: #000 !important;
+            background: #ffffff !important;
+            padding: 8px 6px !important;
+            color: #000000 !important;
         }
         
         .credits-content .data-label, .debits-content .data-label {
-            padding-left: 5px;
-            color: #000 !important;
+            padding-left: 5px !important;
+            color: #000000 !important;
         }
         
         .credits-content .data-value, .debits-content .data-value {
-            color: #000 !important;
+            color: #000000 !important;
         }
         
         .credits-footer, .debits-footer {
-            background: #f0f0f0 !important;
-            padding: 8px 6px;
-            border-top: 1px solid #000 !important;
+            background: #808080 !important;
+            padding: 8px 6px !important;
+            border-top: 1px solid #000000 !important;
         }
         
         .credits-footer .data-label, .debits-footer .data-label {
-            font-weight: bold;
-            color: #000 !important;
+            font-weight: bold !important;
+            color: #ffffff !important;
         }
         
         .credits-footer .data-value, .debits-footer .data-value {
-            font-weight: bold;
-            color: #000 !important;
+            font-weight: bold !important;
+            color: #ffffff !important;
         }
         
 
@@ -172,6 +172,30 @@
             .main-content {
                 page-break-inside: avoid;
             }
+        }
+        
+        /* Force styling for CREDITS and DEBITS sections */
+        .credits-section *,
+        .debits-section * {
+            box-sizing: border-box !important;
+        }
+        
+        .credits-title,
+        .debits-title {
+            background-color: #000000 !important;
+            color: #ffffff !important;
+        }
+        
+        .credits-content,
+        .debits-content {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+        }
+        
+        .credits-footer,
+        .debits-footer {
+            background-color: #808080 !important;
+            color: #ffffff !important;
         }
     </style>
 </head>
