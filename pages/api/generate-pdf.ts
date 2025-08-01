@@ -29,6 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await page.setContent(html);
     const pdfBuffer = await page.pdf({ 
       format: 'A4',
+      printBackground: true,
       margin: {
         top: '0.25in',
         right: '0.25in',
