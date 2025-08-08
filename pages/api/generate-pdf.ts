@@ -17,20 +17,43 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const templatePath = path.join(process.cwd(), 'templates', 'dscr-term-sheet.html');
     let html = await fs.readFile(templatePath, 'utf8');
 
-    // 2. Replace ALL placeholders including logo_url
-    for (const [key, value] of Object.entries(req.body)) {
-      const regex = new RegExp(`{{\\s*${key}\\s*}}`, 'g');
-      const replacement = String(value ?? '');
-      console.log(`Replacing ${key} with: ${replacement}`);
-      html = html.replace(regex, replacement);
+    // 2. Handle logo URL - convert to base64 if possible
+    let logoUrl = req.body.logo_url || 'https://yvykefnhoxuvovczsucw.supabase.co/storage/v1/object/public/documint-uploads/brrrr-loans-logo-light.svg';
+    
+    // Try to fetch the logo and convert to base64
+    try {
+      console.log('Fetching logo from:', logoUrl);
+      const logoResponse = await fetch(logoUrl);
+      if (logoResponse.ok) {
+        const logoBuffer = await logoResponse.arrayBuffer();
+        const logoBase64 = Buffer.from(logoBuffer).toString('base64');
+        const contentType = logoResponse.headers.get('content-type') || 'image/svg+xml';
+        logoUrl = `data:${contentType};base64,${logoBase64}`;
+        console.log('Logo converted to base64, length:', logoBase64.length);
+      } else {
+        console.log('Failed to fetch logo, using original URL');
+      }
+    } catch (error) {
+      console.log('Error fetching logo, using original URL:', error);
     }
 
-    // 3. Handle fallbacks for missing values
-    const defaultLogoUrl = 'https://yvykefnhoxuvovczsucw.supabase.co/storage/v1/object/public/documint-uploads/brrrr-loans-logo-light.svg';
+    // 3. Replace ALL placeholders including logo_url
+    for (const [key, value] of Object.entries(req.body)) {
+      if (key === 'logo_url') {
+        // Handle logo_url specially
+        const regex = new RegExp(`{{\\s*logo_url\\s*}}`, 'g');
+        console.log(`Replacing logo_url with base64 data URL`);
+        html = html.replace(regex, logoUrl);
+      } else {
+        const regex = new RegExp(`{{\\s*${key}\\s*}}`, 'g');
+        const replacement = String(value ?? '');
+        console.log(`Replacing ${key} with: ${replacement}`);
+        html = html.replace(regex, replacement);
+      }
+    }
+
+    // 4. Handle fallbacks for missing values
     const defaultProgramColor = '#F6AE35';
-    
-    // Replace any remaining logo_url placeholders with default
-    html = html.replace(/\{\{\s*logo_url\s*\}\}/g, defaultLogoUrl);
     html = html.replace(/\{\{\s*program_color\s*\}\}/g, defaultProgramColor);
 
     console.log('Final HTML logo_url replacement:', html.includes('logo_url') ? 'FAILED' : 'SUCCESS');
