@@ -72,6 +72,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const snippet = html.substring(Math.max(0, logoIndex - 50), logoIndex + 50);
       console.log('HTML snippet around logo_url:', snippet);
     }
+    
+    // Auto-adjust font size for long labels to prevent wrapping
+    html = html.replace(/<span class="data-label">([^<]+)<\/span>/g, (match, labelText) => {
+      const length = labelText.length;
+      let fontSize = 12;
+      
+      if (length > 40) fontSize = 8;
+      else if (length > 30) fontSize = 9;
+      else if (length > 20) fontSize = 10;
+      else if (length > 15) fontSize = 11;
+      
+      return `<span class="data-label" style="font-size: ${fontSize}px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important;">${labelText}</span>`;
+    });
 
     // 4. Generate PDF using Puppeteer
     const browser = await puppeteer.launch({
