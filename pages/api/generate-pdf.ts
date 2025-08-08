@@ -44,7 +44,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await page.setContent(html);
     
     // Wait for images to load and check if logo is present
-    await page.waitForTimeout(2000);
+    await page.waitForFunction(() => {
+      const images = document.querySelectorAll('img');
+      return Array.from(images).every(img => img.complete);
+    }, { timeout: 5000 });
     
     // Check if the logo image is loaded
     const logoElement = await page.$('img[src*="supabase"]');
