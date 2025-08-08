@@ -73,17 +73,61 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.log('HTML snippet around logo_url:', snippet);
     }
     
-    // Auto-adjust font size for long labels to prevent wrapping
+    // Auto-adjust font size for long labels to prevent wrapping - AGGRESSIVE APPROACH
+    console.log('Starting font size adjustment for labels...');
+    
+    // Handle span-based labels
     html = html.replace(/<span class="data-label">([^<]+)<\/span>/g, (match, labelText) => {
       const length = labelText.length;
       let fontSize = 12;
       
-      if (length > 40) fontSize = 8;
-      else if (length > 30) fontSize = 9;
+      if (length > 50) fontSize = 6;
+      else if (length > 40) fontSize = 7;
+      else if (length > 30) fontSize = 8;
+      else if (length > 25) fontSize = 9;
       else if (length > 20) fontSize = 10;
       else if (length > 15) fontSize = 11;
       
-      return `<span class="data-label" style="font-size: ${fontSize}px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important;">${labelText}</span>`;
+      console.log(`Label: "${labelText}" (${length} chars) -> ${fontSize}px`);
+      return `<span class="data-label" style="font-size: ${fontSize}px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; max-width: 60% !important;">${labelText}</span>`;
+    });
+    
+    // Handle table cell labels (for credits/debits sections)
+    html = html.replace(/(<td[^>]*style="[^"]*color: [^"]*; padding: [^"]*; background-color: [^"]*;">)([^<]+)(<\/td>)/g, (match, startTag, labelText, endTag) => {
+      const length = labelText.length;
+      let fontSize = 12;
+      
+      if (length > 50) fontSize = 6;
+      else if (length > 40) fontSize = 7;
+      else if (length > 30) fontSize = 8;
+      else if (length > 25) fontSize = 9;
+      else if (length > 20) fontSize = 10;
+      else if (length > 15) fontSize = 11;
+      
+      console.log(`Table Label: "${labelText}" (${length} chars) -> ${fontSize}px`);
+      return `${startTag}${labelText}${endTag}`.replace(/style="([^"]*)"/, `style="$1; font-size: ${fontSize}px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important;"`);
+    });
+    
+    // Also handle any td elements that might contain labels
+    html = html.replace(/(<td[^>]*>)([^<]+)(<\/td>)/g, (match, startTag, content, endTag) => {
+      // Only process if it looks like a label (not a value with $ or numbers)
+      if (content.includes('$') || /^\s*[\d,]+\.?\d*\s*$/.test(content.trim())) {
+        return match; // Skip values
+      }
+      
+      const length = content.length;
+      if (length < 10) return match; // Skip short content
+      
+      let fontSize = 12;
+      if (length > 50) fontSize = 6;
+      else if (length > 40) fontSize = 7;
+      else if (length > 30) fontSize = 8;
+      else if (length > 25) fontSize = 9;
+      else if (length > 20) fontSize = 10;
+      else if (length > 15) fontSize = 11;
+      
+      console.log(`Generic Label: "${content}" (${length} chars) -> ${fontSize}px`);
+      return startTag.replace(/style="([^"]*)"/, `style="$1; font-size: ${fontSize}px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important;"`) + content + endTag;
     });
 
     // 4. Generate PDF using Puppeteer
