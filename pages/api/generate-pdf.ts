@@ -14,17 +14,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const templatePath = path.join(process.cwd(), 'templates', 'dscr-term-sheet.html');
     let html = await fs.readFile(templatePath, 'utf8');
 
-    // 2. Replace placeholders in the template with request data
-    for (const [key, value] of Object.entries(req.body)) {
-      const regex = new RegExp(`{{\\s*${key}\\s*}}`, 'g');
-      html = html.replace(regex, String(value ?? ''));
-    }
-
-    // 3. Handle logo fallback
+    // 2. Handle logo fallback first (before general replacement)
     const defaultLogoUrl = 'https://yvykefnhoxuvovczsucw.supabase.co/storage/v1/object/public/documint-uploads/brrrr-loans-logo-light.svg';
     const logoUrl = req.body.logo_url || defaultLogoUrl;
     console.log('Logo URL being used:', logoUrl);
+    console.log('Request body keys:', Object.keys(req.body));
+    
+    // Test if logo URL is accessible
+    try {
+      const response = await fetch(logoUrl);
+      console.log('Logo URL accessibility:', {
+        status: response.status,
+        ok: response.ok,
+        contentType: response.headers.get('content-type')
+      });
+    } catch (error) {
+      console.log('Logo URL fetch error:', error);
+    }
+    
     html = html.replace(/\{\{\s*logo_url\s*\}\}/g, logoUrl);
+
+    // 3. Replace placeholders in the template with request data
+    for (const [key, value] of Object.entries(req.body)) {
+      if (key !== 'logo_url') { // Skip logo_url as it's already handled
+        const regex = new RegExp(`{{\\s*${key}\\s*}}`, 'g');
+        html = html.replace(regex, String(value ?? ''));
+      }
+    }
 
     // 4. Handle program color fallback
     const defaultProgramColor = '#F6AE35';
@@ -43,18 +59,41 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     await page.setContent(html);
     
-    // Wait for images to load and check if logo is present
-    await page.waitForFunction(() => {
+    // Debug: Check what's in the HTML
+    const allImages = await page.evaluate(() => {
       const images = document.querySelectorAll('img');
-      return Array.from(images).every(img => img.complete);
-    }, { timeout: 5000 });
+      return Array.from(images).map(img => ({
+        src: img.getAttribute('src'),
+        alt: img.getAttribute('alt'),
+        complete: img.complete,
+        naturalWidth: img.naturalWidth,
+        naturalHeight: img.naturalHeight
+      }));
+    });
+    console.log('All images in HTML:', allImages);
+    
+    // Wait for images to load and check if logo is present
+    try {
+      await page.waitForFunction(() => {
+        const images = document.querySelectorAll('img');
+        return Array.from(images).every(img => img.complete);
+      }, { timeout: 10000 });
+    } catch (error) {
+      console.log('Timeout waiting for images to load, continuing anyway');
+    }
     
     // Check if the logo image is loaded
     const logoElement = await page.$('img[src*="supabase"]');
     if (logoElement) {
       const isVisible = await logoElement.isVisible();
       const src = await page.evaluate(el => el.getAttribute('src'), logoElement);
-      console.log('Logo found:', { src, isVisible });
+      const dimensions = await page.evaluate(el => ({
+        naturalWidth: el.naturalWidth,
+        naturalHeight: el.naturalHeight,
+        offsetWidth: el.offsetWidth,
+        offsetHeight: el.offsetHeight
+      }), logoElement);
+      console.log('Logo found:', { src, isVisible, dimensions });
     } else {
       console.log('No logo element found');
     }
