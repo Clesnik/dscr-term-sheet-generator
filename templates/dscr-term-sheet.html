@@ -172,12 +172,19 @@
             margin-bottom: 4px;
             align-items: center;
             font-size: 12px;
+            gap: 10px;
         }
         
         .data-label {
             font-weight: normal;
             color: #333;
             padding-left: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex-shrink: 0;
+            min-width: 0;
+            font-size: clamp(8px, 2.5vw, 12px);
         }
         
         .data-value {
@@ -185,6 +192,8 @@
             color: #333;
             text-align: right;
             padding-right: 10px;
+            flex-shrink: 0;
+            white-space: nowrap;
         }
         
         .credits-debits {
