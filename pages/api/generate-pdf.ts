@@ -57,6 +57,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     html = html.replace(/\{\{\s*program_color\s*\}\}/g, defaultProgramColor);
 
     console.log('Final HTML logo_url replacement:', html.includes('logo_url') ? 'FAILED' : 'SUCCESS');
+    
+    // Debug: Check if logo_url placeholder still exists
+    const logoPlaceholderCount = (html.match(/\{\{\s*logo_url\s*\}\}/g) || []).length;
+    console.log('Remaining logo_url placeholders:', logoPlaceholderCount);
+    
+    // Debug: Show a snippet of the HTML around the logo
+    const logoIndex = html.indexOf('logo_url');
+    if (logoIndex !== -1) {
+      const snippet = html.substring(Math.max(0, logoIndex - 50), logoIndex + 50);
+      console.log('HTML snippet around logo_url:', snippet);
+    }
 
     // 4. Generate PDF using Puppeteer
     const browser = await puppeteer.launch({
