@@ -10,94 +10,71 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    console.log('=== PDF GENERATION START ===');
+    console.log('Request body:', JSON.stringify(req.body, null, 2));
+
     // 1. Read the HTML template
     const templatePath = path.join(process.cwd(), 'templates', 'dscr-term-sheet.html');
     let html = await fs.readFile(templatePath, 'utf8');
 
-    // 2. Handle logo fallback first (before general replacement)
-    const defaultLogoUrl = 'https://yvykefnhoxuvovczsucw.supabase.co/storage/v1/object/public/documint-uploads/brrrr-loans-logo-light.svg';
-    const logoUrl = req.body.logo_url || defaultLogoUrl;
-    console.log('Logo URL being used:', logoUrl);
-    console.log('Request body keys:', Object.keys(req.body));
-    
-    // Test if logo URL is accessible
-    try {
-      const response = await fetch(logoUrl);
-      console.log('Logo URL accessibility:', {
-        status: response.status,
-        ok: response.ok,
-        contentType: response.headers.get('content-type')
-      });
-    } catch (error) {
-      console.log('Logo URL fetch error:', error);
-    }
-    
-    html = html.replace(/\{\{\s*logo_url\s*\}\}/g, logoUrl);
-
-    // 3. Replace placeholders in the template with request data
+    // 2. Replace ALL placeholders including logo_url
     for (const [key, value] of Object.entries(req.body)) {
-      if (key !== 'logo_url') { // Skip logo_url as it's already handled
-        const regex = new RegExp(`{{\\s*${key}\\s*}}`, 'g');
-        html = html.replace(regex, String(value ?? ''));
-      }
+      const regex = new RegExp(`{{\\s*${key}\\s*}}`, 'g');
+      const replacement = String(value ?? '');
+      console.log(`Replacing ${key} with: ${replacement}`);
+      html = html.replace(regex, replacement);
     }
 
-    // 4. Handle program color fallback
+    // 3. Handle fallbacks for missing values
+    const defaultLogoUrl = 'https://yvykefnhoxuvovczsucw.supabase.co/storage/v1/object/public/documint-uploads/brrrr-loans-logo-light.svg';
     const defaultProgramColor = '#F6AE35';
-    const programColor = req.body.program_color || defaultProgramColor;
-    html = html.replace(/\{\{\s*program_color\s*\}\}/g, programColor);
+    
+    // Replace any remaining logo_url placeholders with default
+    html = html.replace(/\{\{\s*logo_url\s*\}\}/g, defaultLogoUrl);
+    html = html.replace(/\{\{\s*program_color\s*\}\}/g, defaultProgramColor);
 
-    // 3. Generate PDF using Puppeteer
+    console.log('Final HTML logo_url replacement:', html.includes('logo_url') ? 'FAILED' : 'SUCCESS');
+
+    // 4. Generate PDF using Puppeteer
     const browser = await puppeteer.launch({
       headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-web-security', '--allow-running-insecure-content']
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-web-security',
+        '--allow-running-insecure-content',
+        '--disable-features=VizDisplayCompositor'
+      ]
     });
+
     const page = await browser.newPage();
     
-    // Enable images and set user agent for better compatibility
+    // Set viewport and user agent
+    await page.setViewport({ width: 1200, height: 800 });
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
     
-    await page.setContent(html);
+    // Set content and wait for network idle
+    await page.setContent(html, { waitUntil: 'networkidle0' });
     
-    // Debug: Check what's in the HTML
-    const allImages = await page.evaluate(() => {
-      const images = document.querySelectorAll('img');
-      return Array.from(images).map(img => ({
-        src: img.getAttribute('src'),
-        alt: img.getAttribute('alt'),
-        complete: img.complete,
+    // Force wait for images
+    await page.waitForTimeout(3000);
+    
+    // Debug: Log all images
+    const images = await page.evaluate(() => {
+      const imgs = document.querySelectorAll('img');
+      return Array.from(imgs).map(img => ({
+        src: img.src,
+        alt: img.alt,
+        width: img.width,
+        height: img.height,
         naturalWidth: img.naturalWidth,
-        naturalHeight: img.naturalHeight
+        naturalHeight: img.naturalHeight,
+        complete: img.complete
       }));
     });
-    console.log('All images in HTML:', allImages);
-    
-    // Wait for images to load and check if logo is present
-    try {
-      await page.waitForFunction(() => {
-        const images = document.querySelectorAll('img');
-        return Array.from(images).every(img => img.complete);
-      }, { timeout: 10000 });
-    } catch (error) {
-      console.log('Timeout waiting for images to load, continuing anyway');
-    }
-    
-    // Check if the logo image is loaded
-    const logoElement = await page.$('img[src*="supabase"]');
-    if (logoElement) {
-      const isVisible = await logoElement.isVisible();
-      const src = await page.evaluate(el => el.getAttribute('src'), logoElement);
-      const dimensions = await page.evaluate(el => ({
-        naturalWidth: el.naturalWidth,
-        naturalHeight: el.naturalHeight,
-        offsetWidth: el.offsetWidth,
-        offsetHeight: el.offsetHeight
-      }), logoElement);
-      console.log('Logo found:', { src, isVisible, dimensions });
-    } else {
-      console.log('No logo element found');
-    }
-    
+    console.log('Images found:', images);
+
+    // Generate PDF
     const pdfBuffer = await page.pdf({ 
       format: 'A4',
       printBackground: true,
@@ -108,17 +85,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         left: '0.25in'
       }
     });
+
     await browser.close();
 
-    // 4. Convert to real Buffer and send the PDF as a file
+    // Send response
     const buffer = Buffer.from(pdfBuffer);
-    console.log('PDF buffer type:', typeof buffer, 'isBuffer:', Buffer.isBuffer(buffer), 'length:', buffer.length);
+    console.log('PDF generated successfully, size:', buffer.length);
+    console.log('=== PDF GENERATION END ===');
+    
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', 'attachment; filename=term-sheet.pdf');
     res.setHeader('Content-Length', buffer.length.toString());
     res.status(200).end(buffer);
   } catch (err) {
     console.error('PDF generation error:', err);
-    res.status(500).json({ error: 'Failed to generate PDF', details: err instanceof Error ? err.message : err, stack: err instanceof Error ? err.stack : undefined });
+    res.status(500).json({ 
+      error: 'Failed to generate PDF', 
+      details: err instanceof Error ? err.message : err, 
+      stack: err instanceof Error ? err.stack : undefined 
+    });
   }
 } 
