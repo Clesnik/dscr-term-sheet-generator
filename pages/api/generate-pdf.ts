@@ -21,8 +21,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // 3. Handle logo fallback
-    const defaultLogoUrl = 'https://yvykefnhoxuvovczsucw.supabase.co/storage/v1/object/public/documint-uploads//brrrr-loans-logo-light.svg';
-    const logoUrl = req.body.logo || defaultLogoUrl;
+    const defaultLogoUrl = 'https://yvykefnhoxuvovczsucw.supabase.co/storage/v1/object/public/documint-uploads/brrrr-loans-logo-light.svg';
+    const logoUrl = req.body.logo_url || defaultLogoUrl;
+    console.log('Logo URL being used:', logoUrl);
     html = html.replace(/\{\{\s*logo_url\s*\}\}/g, logoUrl);
 
     // 4. Handle program color fallback
@@ -33,10 +34,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // 3. Generate PDF using Puppeteer
     const browser = await puppeteer.launch({
       headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-web-security', '--allow-running-insecure-content']
     });
     const page = await browser.newPage();
+    
+    // Enable images and set user agent for better compatibility
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+    
     await page.setContent(html);
+    
+    // Wait for images to load and check if logo is present
+    await page.waitForTimeout(2000);
+    
+    // Check if the logo image is loaded
+    const logoElement = await page.$('img[src*="supabase"]');
+    if (logoElement) {
+      const isVisible = await logoElement.isVisible();
+      const src = await logoElement.getAttribute('src');
+      console.log('Logo found:', { src, isVisible });
+    } else {
+      console.log('No logo element found');
+    }
+    
     const pdfBuffer = await page.pdf({ 
       format: 'A4',
       printBackground: true,
