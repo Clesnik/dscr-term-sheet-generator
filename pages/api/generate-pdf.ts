@@ -53,7 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const logoElement = await page.$('img[src*="supabase"]');
     if (logoElement) {
       const isVisible = await logoElement.isVisible();
-      const src = await logoElement.getAttribute('src');
+      const src = await page.evaluate(el => el.getAttribute('src'), logoElement);
       console.log('Logo found:', { src, isVisible });
     } else {
       console.log('No logo element found');
