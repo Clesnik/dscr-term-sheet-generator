@@ -56,8 +56,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Set content and wait for network idle
     await page.setContent(html, { waitUntil: 'networkidle0' });
     
-    // Force wait for images
-    await page.waitForTimeout(3000);
+    // Wait for images to load using a different approach
+    try {
+      await page.waitForFunction(() => {
+        const images = document.querySelectorAll('img');
+        return Array.from(images).every(img => img.complete && img.naturalWidth > 0);
+      }, { timeout: 5000 });
+    } catch (error) {
+      console.log('Timeout waiting for images, continuing anyway');
+    }
     
     // Debug: Log all images
     const images = await page.evaluate(() => {
