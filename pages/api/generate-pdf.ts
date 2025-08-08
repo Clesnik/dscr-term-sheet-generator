@@ -28,6 +28,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const logoBuffer = await logoResponse.arrayBuffer();
         const logoBase64 = Buffer.from(logoBuffer).toString('base64');
         const contentType = logoResponse.headers.get('content-type') || 'image/svg+xml';
+        
+        console.log('Logo content type:', contentType);
+        
+        // Always use base64 for all image types - this is more reliable
         logoUrl = `data:${contentType};base64,${logoBase64}`;
         console.log('Logo converted to base64, length:', logoBase64.length);
       } else {
@@ -77,7 +81,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         '--disable-setuid-sandbox',
         '--disable-web-security',
         '--allow-running-insecure-content',
-        '--disable-features=VizDisplayCompositor'
+        '--disable-features=VizDisplayCompositor',
+        '--enable-features=NetworkService',
+        '--disable-background-timer-throttling',
+        '--disable-backgrounding-occluded-windows',
+        '--disable-renderer-backgrounding'
       ]
     });
 
@@ -94,8 +102,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       await page.waitForFunction(() => {
         const images = document.querySelectorAll('img');
-        return Array.from(images).every(img => img.complete && img.naturalWidth > 0);
-      }, { timeout: 5000 });
+        return Array.from(images).every(img => {
+          // For data URLs, check if the image is loaded
+          if (img.src.startsWith('data:')) {
+            return img.complete && img.naturalWidth > 0;
+          }
+          // For external URLs, just check if complete
+          return img.complete;
+        });
+      }, { timeout: 10000 });
     } catch (error) {
       console.log('Timeout waiting for images, continuing anyway');
     }
