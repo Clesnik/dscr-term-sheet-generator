@@ -81,15 +81,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const length = labelText.length;
       let fontSize = 12;
       
-      if (length > 50) fontSize = 6;
-      else if (length > 40) fontSize = 7;
-      else if (length > 30) fontSize = 8;
-      else if (length > 25) fontSize = 9;
-      else if (length > 20) fontSize = 10;
-      else if (length > 15) fontSize = 11;
+      if (length > 60) fontSize = 8;
+      else if (length > 50) fontSize = 9;
+      else if (length > 40) fontSize = 10;
+      else if (length > 35) fontSize = 11;
       
       console.log(`Label: "${labelText}" (${length} chars) -> ${fontSize}px`);
-      return `<span class="data-label" style="font-size: ${fontSize}px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; max-width: 60% !important;">${labelText}</span>`;
+      return `<span class="data-label" style="font-size: ${fontSize}px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; max-width: 70% !important;">${labelText}</span>`;
     });
     
     // Handle table cell labels (for credits/debits sections)
@@ -97,12 +95,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const length = labelText.length;
       let fontSize = 12;
       
-      if (length > 50) fontSize = 6;
-      else if (length > 40) fontSize = 7;
-      else if (length > 30) fontSize = 8;
-      else if (length > 25) fontSize = 9;
-      else if (length > 20) fontSize = 10;
-      else if (length > 15) fontSize = 11;
+      if (length > 60) fontSize = 8;
+      else if (length > 50) fontSize = 9;
+      else if (length > 40) fontSize = 10;
+      else if (length > 35) fontSize = 11;
       
       console.log(`Table Label: "${labelText}" (${length} chars) -> ${fontSize}px`);
       return `${startTag}${labelText}${endTag}`.replace(/style="([^"]*)"/, `style="$1; font-size: ${fontSize}px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important;"`);
@@ -119,12 +115,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (length < 10) return match; // Skip short content
       
       let fontSize = 12;
-      if (length > 50) fontSize = 6;
-      else if (length > 40) fontSize = 7;
-      else if (length > 30) fontSize = 8;
-      else if (length > 25) fontSize = 9;
-      else if (length > 20) fontSize = 10;
-      else if (length > 15) fontSize = 11;
+      if (length > 60) fontSize = 8;
+      else if (length > 50) fontSize = 9;
+      else if (length > 40) fontSize = 10;
+      else if (length > 35) fontSize = 11;
       
       console.log(`Generic Label: "${content}" (${length} chars) -> ${fontSize}px`);
       return startTag.replace(/style="([^"]*)"/, `style="$1; font-size: ${fontSize}px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important;"`) + content + endTag;
