@@ -1,6 +1,6 @@
 # DSCR Term Sheet PDF Generator
 
-A Node.js/Express API for generating professional DSCR (Debt Service Coverage Ratio) term sheet PDFs using Puppeteer and Handlebars templating.
+A Node.js/Express API for generating professional DSCR (Debt Service Coverage Ratio) term sheet PDFs using Puppeteer and Handlebars templating. Updated for improved deployment.
 
 ## 🚀 Features
 
