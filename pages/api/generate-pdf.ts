@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let html = await fs.readFile(templatePath, 'utf8');
 
     // 2. Handle logo URL - convert to base64 if possible
-    let logoUrl = req.body.logo_url || 'https://yvykefnhoxuvovczsucw.supabase.co/storage/v1/object/public/documint-uploads/brrrr-loans-logo-light.svg';
+    let logoUrl = req.body.logo_url || 'https://yvykefnhoxuvovczsucw.supabase.co/storage/v1/object/public/documint-uploads/Full Mark - Loans - Orange - 20230622 - Smashed Media.svg';
     
     // Try to fetch the logo and convert to base64
     try {
