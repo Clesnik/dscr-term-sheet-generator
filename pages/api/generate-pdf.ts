@@ -59,6 +59,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // 4. Handle fallbacks for missing values
     const defaultProgramColor = '#F6AE35';
     html = html.replace(/\{\{\s*program_color\s*\}\}/g, defaultProgramColor);
+    
+    // Handle logo_url fallback if it wasn't processed in the loop
+    if (html.includes('{{ logo_url }}')) {
+      console.log('logo_url not found in request body, using fallback');
+      html = html.replace(/\{\{\s*logo_url\s*\}\}/g, logoUrl);
+    }
 
     console.log('Final HTML logo_url replacement:', html.includes('logo_url') ? 'FAILED' : 'SUCCESS');
     
