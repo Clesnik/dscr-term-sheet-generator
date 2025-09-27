@@ -22,29 +22,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     console.log('FORCING LOGO URL:', logoUrl);
     
-    // FORCE FETCH SVG AND EMBED DIRECTLY WITH CSS OVERRIDES
-    let embeddedSvg = '';
+    // FORCE LOGO WITH SIMPLE HTML APPROACH
+    let embeddedLogo = '';
     try {
-      console.log('FETCHING SVG FOR DIRECT EMBEDDING...');
+      console.log('FETCHING LOGO FOR SIMPLE HTML EMBEDDING...');
       const logoResponse = await fetch(logoUrl);
       if (logoResponse.ok) {
-        const svgContent = await logoResponse.text();
-        // Add CSS overrides to force display
-        const styledSvg = svgContent.replace('<svg', '<svg style="display: block !important; visibility: visible !important; opacity: 1 !important; max-width: 200px; max-height: 100px;"');
-        embeddedSvg = styledSvg;
-        console.log('SVG FETCHED AND EMBEDDED WITH CSS OVERRIDES!');
+        const logoBuffer = await logoResponse.arrayBuffer();
+        const logoBase64 = Buffer.from(logoBuffer).toString('base64');
+        const contentType = logoResponse.headers.get('content-type') || 'image/svg+xml';
+        embeddedLogo = `<img src="data:${contentType};base64,${logoBase64}" alt="Logo" style="max-width: 200px; max-height: 100px; display: block !important; visibility: visible !important; opacity: 1 !important;">`;
+        console.log('LOGO CONVERTED TO BASE64 IMG TAG!');
       } else {
-        console.log('FAILED TO FETCH SVG, USING FALLBACK');
-        embeddedSvg = `<div style="background: red; color: white; padding: 10px;">LOGO FAILED TO LOAD</div>`;
+        console.log('FAILED TO FETCH LOGO, USING FALLBACK');
+        embeddedLogo = `<div style="background: orange; color: black; padding: 10px; font-weight: bold; max-width: 200px;">BRRRR LOANS</div>`;
       }
     } catch (error) {
-      console.log('ERROR FETCHING SVG:', error);
-      embeddedSvg = `<div style="background: red; color: white; padding: 10px;">LOGO ERROR: ${error.message}</div>`;
+      console.log('ERROR FETCHING LOGO:', error);
+      embeddedLogo = `<div style="background: orange; color: black; padding: 10px; font-weight: bold; max-width: 200px;">BRRRR LOANS</div>`;
     }
 
     // 3. FORCE REPLACE LOGO_URL FIRST - NO EXCEPTIONS
-    console.log('FORCING LOGO REPLACEMENT WITH EMBEDDED SVG');
-    html = html.replace(/\{\{\s*logo_url\s*\}\}/g, embeddedSvg);
+    console.log('FORCING LOGO REPLACEMENT WITH EMBEDDED LOGO');
+    html = html.replace(/\{\{\s*logo_url\s*\}\}/g, embeddedLogo);
     console.log('Logo replacement result:', html.includes('{{ logo_url }}') ? 'FAILED' : 'SUCCESS');
 
     // 3. Replace ALL placeholders (logo is hardcoded, no logo_url processing needed)
