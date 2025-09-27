@@ -58,10 +58,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const logoMatch = html.match(/<img[^>]*src="[^"]*"[^>]*>/i);
     console.log('Logo img tag in HTML:', logoMatch ? logoMatch[0] : 'NOT FOUND');
     
-    // Debug: Check if logo_url placeholder still exists
-    const logoPlaceholderCount = (html.match(/\{\{\s*logo_url\s*\}\}/g) || []).length;
-    console.log('Remaining logo_url placeholders:', logoPlaceholderCount);
-    
     // Debug: Show a snippet of the HTML around the logo
     const logoIndex = html.indexOf('logo_url');
     if (logoIndex !== -1) {
