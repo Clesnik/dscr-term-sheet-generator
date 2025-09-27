@@ -211,8 +211,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log('=== PDF GENERATION END ===');
     
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'attachment; filename=term-sheet.pdf');
+    res.setHeader('Content-Disposition', 'inline; filename=term-sheet.pdf');
     res.setHeader('Content-Length', buffer.length.toString());
+    res.setHeader('Cache-Control', 'no-cache');
     res.status(200).end(buffer);
   } catch (err) {
     console.error('PDF generation error:', err);
