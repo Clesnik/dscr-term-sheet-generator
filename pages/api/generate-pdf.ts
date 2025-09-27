@@ -22,15 +22,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     console.log('FORCING LOGO URL:', logoUrl);
     
-    // FORCE FETCH SVG AND EMBED DIRECTLY
+    // FORCE FETCH SVG AND EMBED DIRECTLY WITH CSS OVERRIDES
     let embeddedSvg = '';
     try {
       console.log('FETCHING SVG FOR DIRECT EMBEDDING...');
       const logoResponse = await fetch(logoUrl);
       if (logoResponse.ok) {
         const svgContent = await logoResponse.text();
-        embeddedSvg = svgContent;
-        console.log('SVG FETCHED AND EMBEDDED SUCCESSFULLY!');
+        // Add CSS overrides to force display
+        const styledSvg = svgContent.replace('<svg', '<svg style="display: block !important; visibility: visible !important; opacity: 1 !important; max-width: 200px; max-height: 100px;"');
+        embeddedSvg = styledSvg;
+        console.log('SVG FETCHED AND EMBEDDED WITH CSS OVERRIDES!');
       } else {
         console.log('FAILED TO FETCH SVG, USING FALLBACK');
         embeddedSvg = `<div style="background: red; color: white; padding: 10px;">LOGO FAILED TO LOAD</div>`;
