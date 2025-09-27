@@ -31,15 +31,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const logoBuffer = await logoResponse.arrayBuffer();
         const logoBase64 = Buffer.from(logoBuffer).toString('base64');
         const contentType = logoResponse.headers.get('content-type') || 'image/svg+xml';
-        embeddedLogo = `<img src="data:${contentType};base64,${logoBase64}" alt="Logo" style="max-width: 200px; max-height: 100px; display: block !important; visibility: visible !important; opacity: 1 !important; border: 2px solid green !important;">`;
+        embeddedLogo = `<img src="data:${contentType};base64,${logoBase64}" alt="Logo" style="max-width: 200px; max-height: 100px; display: block !important; visibility: visible !important; opacity: 1 !important;">`;
         console.log('LOGO CONVERTED TO BASE64 IMG TAG!');
       } else {
         console.log('FAILED TO FETCH LOGO, USING FALLBACK');
-        embeddedLogo = `<div style="background: orange; color: black; padding: 10px; font-weight: bold; max-width: 200px; border: 2px solid green;">BRRRR LOANS FALLBACK</div>`;
+        embeddedLogo = `<div style="background: orange; color: black; padding: 10px; font-weight: bold; max-width: 200px;">BRRRR LOANS</div>`;
       }
     } catch (error) {
       console.log('ERROR FETCHING LOGO:', error);
-      embeddedLogo = `<div style="background: orange; color: black; padding: 10px; font-weight: bold; max-width: 200px; border: 2px solid green;">BRRRR LOANS ERROR</div>`;
+      embeddedLogo = `<div style="background: orange; color: black; padding: 10px; font-weight: bold; max-width: 200px;">BRRRR LOANS</div>`;
     }
 
     // 3. FORCE REPLACE LOGO_URL FIRST - NO EXCEPTIONS
