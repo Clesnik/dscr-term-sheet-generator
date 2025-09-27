@@ -44,7 +44,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // 3. REPLACE LOGO_URL PLACEHOLDER
     console.log('REPLACING LOGO_URL PLACEHOLDER');
+    console.log('HTML contains {{ logo_url }} before replacement:', html.includes('{{ logo_url }}'));
+    console.log('Embedded logo content:', embeddedLogo);
     html = html.replace(/\{\{\s*logo_url\s*\}\}/g, embeddedLogo);
+    console.log('HTML contains {{ logo_url }} after replacement:', html.includes('{{ logo_url }}'));
     console.log('Logo replacement result:', html.includes('{{ logo_url }}') ? 'FAILED' : 'SUCCESS');
 
     // 3. Replace ALL placeholders (logo is hardcoded, no logo_url processing needed)
