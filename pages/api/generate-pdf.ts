@@ -17,38 +17,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const templatePath = path.join(process.cwd(), 'templates', 'dscr-term-sheet.html');
     let html = await fs.readFile(templatePath, 'utf8');
 
-    // 2. Handle logo URL - convert to base64 if possible
-    let logoUrl = req.body.logo_url || 'https://yvykefnhoxuvovczsucw.supabase.co/storage/v1/object/public/documint-uploads/Full Mark - Loans - Orange - 20230622 - Smashed Media.svg';
+    // 2. FORCE LOGO URL - Use the logo_url from request or fallback
+    let logoUrl = req.body.logo_url || 'https://yvykefnhoxuvovczsucw.supabase.co/storage/v1/object/public/documint-uploads/Full%20Mark%20-%20Loans%20-%20Orange%20-%2020230622%20-%20Smashed%20Media.svg';
     
-    // Try to fetch the logo and convert to base64
-    try {
-      console.log('Fetching logo from:', logoUrl);
-      const logoResponse = await fetch(logoUrl);
-      if (logoResponse.ok) {
-        const logoBuffer = await logoResponse.arrayBuffer();
-        const logoBase64 = Buffer.from(logoBuffer).toString('base64');
-        const contentType = logoResponse.headers.get('content-type') || 'image/svg+xml';
-        
-        console.log('Logo content type:', contentType);
-        
-        // Always use base64 for all image types - this is more reliable
-        logoUrl = `data:${contentType};base64,${logoBase64}`;
-        console.log('Logo converted to base64, length:', logoBase64.length);
-      } else {
-        console.log('Failed to fetch logo, using original URL');
-      }
-    } catch (error) {
-      console.log('Error fetching logo, using original URL:', error);
-    }
+    console.log('FORCING LOGO URL:', logoUrl);
 
-    // 3. Replace ALL placeholders including logo_url
+    // 3. FORCE REPLACE LOGO_URL FIRST - NO EXCEPTIONS
+    console.log('FORCING LOGO REPLACEMENT');
+    html = html.replace(/\{\{\s*logo_url\s*\}\}/g, logoUrl);
+    console.log('Logo replacement result:', html.includes('{{ logo_url }}') ? 'FAILED' : 'SUCCESS');
+
+    // 4. Replace ALL other placeholders
     for (const [key, value] of Object.entries(req.body)) {
-      if (key === 'logo_url') {
-        // Handle logo_url specially
-        const regex = new RegExp(`{{\\s*logo_url\\s*}}`, 'g');
-        console.log(`Replacing logo_url with base64 data URL`);
-        html = html.replace(regex, logoUrl);
-      } else {
+      if (key !== 'logo_url') { // Skip logo_url since we already handled it
         const regex = new RegExp(`{{\\s*${key}\\s*}}`, 'g');
         const replacement = String(value ?? '');
         console.log(`Replacing ${key} with: ${replacement}`);
@@ -56,15 +37,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }
 
-    // 4. Handle fallbacks for missing values
+    // 5. Handle fallbacks for missing values
     const defaultProgramColor = '#F6AE35';
     html = html.replace(/\{\{\s*program_color\s*\}\}/g, defaultProgramColor);
-    
-    // Handle logo_url fallback if it wasn't processed in the loop
-    if (html.includes('{{ logo_url }}')) {
-      console.log('logo_url not found in request body, using fallback');
-      html = html.replace(/\{\{\s*logo_url\s*\}\}/g, logoUrl);
-    }
 
     console.log('Final HTML logo_url replacement:', html.includes('logo_url') ? 'FAILED' : 'SUCCESS');
     
