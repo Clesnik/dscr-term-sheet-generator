@@ -22,8 +22,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     console.log('FORCING LOGO URL:', logoUrl);
     
-    // SIMPLE LOGO PROCESSING
+    // FORCE LOGO - HARDCODED FOR NOW
     let embeddedLogo = '';
+    console.log('FORCING LOGO URL:', logoUrl);
+    
     try {
       console.log('FETCHING LOGO...');
       const logoResponse = await fetch(logoUrl);
@@ -31,15 +33,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const logoBuffer = await logoResponse.arrayBuffer();
         const logoBase64 = Buffer.from(logoBuffer).toString('base64');
         const contentType = logoResponse.headers.get('content-type') || 'image/svg+xml';
-        embeddedLogo = `<img src="data:${contentType};base64,${logoBase64}" alt="Logo" style="max-width: 200px; max-height: 100px;">`;
+        embeddedLogo = `<img src="data:${contentType};base64,${logoBase64}" alt="Logo" style="width: 200px; height: 100px; display: block;">`;
         console.log('LOGO CONVERTED TO BASE64!');
       } else {
         console.log('FAILED TO FETCH LOGO, USING FALLBACK');
-        embeddedLogo = `<div style="max-width: 200px;">BRRRR LOANS</div>`;
+        embeddedLogo = `<div style="width: 200px; height: 100px; background: orange; color: black; display: flex; align-items: center; justify-content: center; font-weight: bold;">BRRRR LOANS</div>`;
       }
     } catch (error) {
       console.log('ERROR FETCHING LOGO:', error);
-      embeddedLogo = `<div style="max-width: 200px;">BRRRR LOANS</div>`;
+      embeddedLogo = `<div style="width: 200px; height: 100px; background: orange; color: black; display: flex; align-items: center; justify-content: center; font-weight: bold;">BRRRR LOANS</div>`;
     }
 
     // 3. REPLACE LOGO_URL PLACEHOLDER
