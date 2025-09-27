@@ -68,6 +68,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     console.log('Final HTML logo_url replacement:', html.includes('logo_url') ? 'FAILED' : 'SUCCESS');
     
+    // Debug: Log the actual logo URL being used
+    console.log('Logo URL being used:', logoUrl);
+    
+    // Debug: Check if logo_url placeholder still exists
+    const logoPlaceholderCount = (html.match(/\{\{\s*logo_url\s*\}\}/g) || []).length;
+    console.log('Logo placeholder count after processing:', logoPlaceholderCount);
+    
+    // Debug: Check if the logo is actually in the HTML
+    const logoInHtml = html.includes('data:image') || html.includes('https://');
+    console.log('Logo URL found in HTML:', logoInHtml);
+    
+    // Debug: Log a snippet of the HTML around the logo
+    const logoMatch = html.match(/<img[^>]*src="[^"]*"[^>]*>/i);
+    console.log('Logo img tag in HTML:', logoMatch ? logoMatch[0] : 'NOT FOUND');
+    
     // Debug: Check if logo_url placeholder still exists
     const logoPlaceholderCount = (html.match(/\{\{\s*logo_url\s*\}\}/g) || []).length;
     console.log('Remaining logo_url placeholders:', logoPlaceholderCount);
