@@ -35,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log('Final HTML logo_url replacement:', html.includes('logo_url') ? 'FAILED' : 'SUCCESS');
     
     // Debug: Log the actual logo URL being used
-    console.log('Logo URL being used:', logoUrl);
+    // Logo is hardcoded in template - no URL needed
     
     // Debug: Check if logo_url placeholder still exists
     const logoPlaceholderCount = (html.match(/\{\{\s*logo_url\s*\}\}/g) || []).length;
