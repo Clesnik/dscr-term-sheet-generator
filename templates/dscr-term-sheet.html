@@ -308,7 +308,9 @@
             </div>
             <div style="text-align: right; border: 5px solid red; background: yellow; padding: 20px;">
                 <div style="background: orange; color: black; padding: 10px; font-size: 20px; font-weight: bold;">LOGO AREA - {{ logo_url }}</div>
-                <img src="{{ logo_url }}" alt="Logo" style="max-width: 200px; max-height: 100px; object-fit: contain; border: 3px solid blue; background: white;">
+                <div style="border: 3px solid blue; background: white; padding: 10px; max-width: 200px; max-height: 100px;">
+                    {{ logo_url }}
+                </div>
             </div>
         </div>
     </div>

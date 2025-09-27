@@ -22,26 +22,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     console.log('FORCING LOGO URL:', logoUrl);
     
-    // FORCE CONVERT TO BASE64 - Puppeteer might not load external images
+    // FORCE FETCH SVG AND EMBED DIRECTLY
+    let embeddedSvg = '';
     try {
-      console.log('FETCHING LOGO FOR BASE64 CONVERSION...');
+      console.log('FETCHING SVG FOR DIRECT EMBEDDING...');
       const logoResponse = await fetch(logoUrl);
       if (logoResponse.ok) {
-        const logoBuffer = await logoResponse.arrayBuffer();
-        const logoBase64 = Buffer.from(logoBuffer).toString('base64');
-        const contentType = logoResponse.headers.get('content-type') || 'image/svg+xml';
-        logoUrl = `data:${contentType};base64,${logoBase64}`;
-        console.log('LOGO CONVERTED TO BASE64 SUCCESSFULLY!');
+        const svgContent = await logoResponse.text();
+        embeddedSvg = svgContent;
+        console.log('SVG FETCHED AND EMBEDDED SUCCESSFULLY!');
       } else {
-        console.log('FAILED TO FETCH LOGO, USING ORIGINAL URL');
+        console.log('FAILED TO FETCH SVG, USING FALLBACK');
+        embeddedSvg = `<div style="background: red; color: white; padding: 10px;">LOGO FAILED TO LOAD</div>`;
       }
     } catch (error) {
-      console.log('ERROR FETCHING LOGO:', error);
+      console.log('ERROR FETCHING SVG:', error);
+      embeddedSvg = `<div style="background: red; color: white; padding: 10px;">LOGO ERROR: ${error.message}</div>`;
     }
 
     // 3. FORCE REPLACE LOGO_URL FIRST - NO EXCEPTIONS
-    console.log('FORCING LOGO REPLACEMENT');
-    html = html.replace(/\{\{\s*logo_url\s*\}\}/g, logoUrl);
+    console.log('FORCING LOGO REPLACEMENT WITH EMBEDDED SVG');
+    html = html.replace(/\{\{\s*logo_url\s*\}\}/g, embeddedSvg);
     console.log('Logo replacement result:', html.includes('{{ logo_url }}') ? 'FAILED' : 'SUCCESS');
 
     // 3. Replace ALL placeholders (logo is hardcoded, no logo_url processing needed)
