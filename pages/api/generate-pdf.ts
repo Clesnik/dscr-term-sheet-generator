@@ -21,6 +21,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let logoUrl = req.body.logo_url || 'https://yvykefnhoxuvovczsucw.supabase.co/storage/v1/object/public/documint-uploads/Full%20Mark%20-%20Loans%20-%20Orange%20-%2020230622%20-%20Smashed%20Media.svg';
     
     console.log('FORCING LOGO URL:', logoUrl);
+    
+    // FORCE CONVERT TO BASE64 - Puppeteer might not load external images
+    try {
+      console.log('FETCHING LOGO FOR BASE64 CONVERSION...');
+      const logoResponse = await fetch(logoUrl);
+      if (logoResponse.ok) {
+        const logoBuffer = await logoResponse.arrayBuffer();
+        const logoBase64 = Buffer.from(logoBuffer).toString('base64');
+        const contentType = logoResponse.headers.get('content-type') || 'image/svg+xml';
+        logoUrl = `data:${contentType};base64,${logoBase64}`;
+        console.log('LOGO CONVERTED TO BASE64 SUCCESSFULLY!');
+      } else {
+        console.log('FAILED TO FETCH LOGO, USING ORIGINAL URL');
+      }
+    } catch (error) {
+      console.log('ERROR FETCHING LOGO:', error);
+    }
 
     // 3. FORCE REPLACE LOGO_URL FIRST - NO EXCEPTIONS
     console.log('FORCING LOGO REPLACEMENT');
