@@ -22,32 +22,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     console.log('FORCING LOGO URL:', logoUrl);
     
-    // FORCE LOGO WITH AGGRESSIVE FALLBACK
+    // SIMPLE LOGO PROCESSING
     let embeddedLogo = '';
     try {
-      console.log('FETCHING LOGO FOR SIMPLE HTML EMBEDDING...');
+      console.log('FETCHING LOGO...');
       const logoResponse = await fetch(logoUrl);
       if (logoResponse.ok) {
         const logoBuffer = await logoResponse.arrayBuffer();
         const logoBase64 = Buffer.from(logoBuffer).toString('base64');
         const contentType = logoResponse.headers.get('content-type') || 'image/svg+xml';
-        embeddedLogo = `<img src="data:${contentType};base64,${logoBase64}" alt="Logo" style="max-width: 200px; max-height: 100px; display: block !important; visibility: visible !important; opacity: 1 !important;">`;
-        console.log('LOGO CONVERTED TO BASE64 IMG TAG!');
+        embeddedLogo = `<img src="data:${contentType};base64,${logoBase64}" alt="Logo" style="max-width: 200px; max-height: 100px;">`;
+        console.log('LOGO CONVERTED TO BASE64!');
       } else {
         console.log('FAILED TO FETCH LOGO, USING FALLBACK');
-        embeddedLogo = `<div style="background: orange; color: black; padding: 10px; font-weight: bold; max-width: 200px;">BRRRR LOANS</div>`;
+        embeddedLogo = `<div style="max-width: 200px;">BRRRR LOANS</div>`;
       }
     } catch (error) {
       console.log('ERROR FETCHING LOGO:', error);
-      embeddedLogo = `<div style="background: orange; color: black; padding: 10px; font-weight: bold; max-width: 200px;">BRRRR LOANS</div>`;
+      embeddedLogo = `<div style="max-width: 200px;">BRRRR LOANS</div>`;
     }
 
-    // 3. FORCE REPLACE LOGO_URL FIRST - NO EXCEPTIONS
-    console.log('FORCING LOGO REPLACEMENT WITH EMBEDDED LOGO');
-    console.log('BEFORE replacement - HTML contains {{ logo_url }}:', html.includes('{{ logo_url }}'));
-    console.log('Embedded logo content:', embeddedLogo.substring(0, 100) + '...');
+    // 3. REPLACE LOGO_URL PLACEHOLDER
+    console.log('REPLACING LOGO_URL PLACEHOLDER');
     html = html.replace(/\{\{\s*logo_url\s*\}\}/g, embeddedLogo);
-    console.log('AFTER replacement - HTML contains {{ logo_url }}:', html.includes('{{ logo_url }}'));
     console.log('Logo replacement result:', html.includes('{{ logo_url }}') ? 'FAILED' : 'SUCCESS');
 
     // 3. Replace ALL placeholders (logo is hardcoded, no logo_url processing needed)
